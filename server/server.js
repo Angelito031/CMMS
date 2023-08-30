@@ -2,6 +2,7 @@ import express from "express";
 import cors from "cors";
 import dotenv from "dotenv";
 import mongoose from "mongoose";
+import announcementRoutes from "./routes/announcementRoutes.js";
 
 //Dotenv config
 dotenv.config();
@@ -28,3 +29,6 @@ mongoose
   .catch((error) => {
     console.log(error);
   });
+
+//Server Routes
+app.use("/api/announcement", announcementRoutes);
