@@ -3,6 +3,7 @@ import cors from "cors";
 import dotenv from "dotenv";
 import mongoose from "mongoose";
 import announcementRoutes from "./routes/announcementRoutes.js";
+import subjectRoutes from "./routes/subjectRoutes.js";
 
 //Dotenv config
 dotenv.config();
@@ -32,3 +33,4 @@ mongoose
 
 //Server Routes
 app.use("/api/announcement", announcementRoutes);
+app.use("/api/subject", subjectRoutes);
