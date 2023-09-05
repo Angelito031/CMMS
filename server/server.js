@@ -5,6 +5,7 @@ import mongoose from "mongoose";
 import announcementRoutes from "./routes/announcementRoutes.js";
 import subjectRoutes from "./routes/subjectRoutes.js";
 import gradeRoutes from "./routes/gradeRoutes.js";
+import userRoutes from "./routes/userRoutes.js";
 
 //Dotenv config
 dotenv.config();
@@ -37,3 +38,4 @@ mongoose
 app.use("/api/announcement", announcementRoutes);
 app.use("/api/subject", subjectRoutes);
 app.use("/api/grade", gradeRoutes);
+app.use("/api/user", userRoutes);
