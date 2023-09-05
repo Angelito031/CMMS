@@ -4,6 +4,7 @@ import dotenv from "dotenv";
 import mongoose from "mongoose";
 import announcementRoutes from "./routes/announcementRoutes.js";
 import subjectRoutes from "./routes/subjectRoutes.js";
+import gradeRoutes from "./routes/gradeRoutes.js";
 
 //Dotenv config
 dotenv.config();
@@ -16,14 +17,15 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 //Setting up the database and server
-const port = process.env.PORT || 5000;
-
+const PORT = process.env.PORT || 5000;
+const ATLAS_URI = process.env.ATLAS_URI; //FOR PRODUCTION
+const DB_URI = process.env.DB_URI; //FOR DEVELOPMENT
 mongoose
-  .connect(process.env.ATLAS_URI)
+  .connect(DB_URI)
   .then(() => {
-    app.listen(port, () => {
+    app.listen(PORT, () => {
       console.log(
-        `MongoDB is connected and Server is started at port: ${port}`
+        `MongoDB is connected and Server is started at port: ${PORT}`
       );
     });
   })
@@ -34,3 +36,4 @@ mongoose
 //Server Routes
 app.use("/api/announcement", announcementRoutes);
 app.use("/api/subject", subjectRoutes);
+app.use("/api/grade", gradeRoutes);
