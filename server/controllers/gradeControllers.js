@@ -49,10 +49,14 @@ export const updateGrade = async (req, res) => {
       return res.status(400).json({ message: "Grade not found" });
     }
 
-    const updatedGrade = await gradeModel.findByIdAndUpdate(gradeId, {
-      subjTitle,
-      grade,
-    });
+    const updatedGrade = await gradeModel.findByIdAndUpdate(
+      gradeId,
+      {
+        subjTitle,
+        grade,
+      },
+      { new: true }
+    );
 
     if (!updatedGrade) {
       return res

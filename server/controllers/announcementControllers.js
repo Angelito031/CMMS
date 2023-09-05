@@ -53,7 +53,8 @@ export const updateAnnouncement = async (req, res) => {
     //Finding the announcement by id and updating it
     const announcement = await announcementModel.findByIdAndUpdate(
       announcementId,
-      text
+      text,
+      { new: true }
     );
 
     return res
