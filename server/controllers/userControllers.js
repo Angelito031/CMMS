@@ -33,6 +33,37 @@ export const getUserById = async (req, res) => {
     return res.status(500).json({ message: "An Error Has Occurred" });
   }
 };
+
+export const loginUser = async (req, res) => {
+  const { studNo, password } = req.body;
+  try {
+    if (!studNo || !password) {
+      return res.status(400).json({ message: "Please fill all the fields" });
+    }
+    const user = await userModel.findOne({ studNo });
+    if (!user) {
+      return res.status(400).json({ message: "Student number doesn`t exist" });
+    }
+    const isMatch = await bcrypt.compare(password, user.password);
+    if (!isMatch) {
+      return res.status(400).json({ message: "Wrong password" });
+    }
+    const token = jwt.sign(
+      { id: user._id, userLevel: user.userLevel },
+      process.env.SECRET
+    );
+    return res.status(200).json({
+      message: "User login",
+      user: { id: user._id, userLevel: user.userLevel },
+      token,
+    });
+  } catch (error) {
+    return res
+      .status(500)
+      .json({ message: "An Error Has Occurred", error: error.message });
+  }
+};
+
 export const setUser = async (req, res) => {
   const { studNo, password, fullname, address, contact, userLevel } = req.body;
   try {
@@ -71,13 +102,10 @@ export const setUser = async (req, res) => {
         .json({ message: "An error has occurred while making your account" });
     }
     await newUser.save();
-    const token = jwt.sign(
-      { id: newUser._id, studNo, fullname, address, contact, userLevel },
-      process.env.SECRET
-    );
+    const token = jwt.sign({ id: newUser._id, userLevel }, process.env.SECRET);
     return res.status(200).json({
       message: "User created",
-      user: { id: newUser._id, studNo, fullname, address, contact, userLevel },
+      user: { id: newUser._id, userLevel },
       token,
     });
   } catch (error) {
