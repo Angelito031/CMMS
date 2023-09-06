@@ -5,10 +5,18 @@ import {
   setSubject,
   updateSubject,
 } from "../controllers/subjectControllers.js";
+import { authToken } from "../middlewares/authToken.js";
+import { authUserLevel } from "../middlewares/authUserLevel.js";
 
 const subjectRoutes = express.Router();
 
-subjectRoutes.route("/").get(getSubject).post(setSubject);
-subjectRoutes.route("/:id").patch(updateSubject).delete(deleteSubject);
+subjectRoutes
+  .route("/")
+  .get(authToken, getSubject)
+  .post(authToken, authUserLevel, setSubject);
+subjectRoutes
+  .route("/:id")
+  .patch(authToken, authUserLevel, updateSubject)
+  .delete(authToken, authUserLevel, deleteSubject);
 
 export default subjectRoutes;

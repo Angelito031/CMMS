@@ -5,10 +5,14 @@ import {
   setGrade,
   updateGrade,
 } from "../controllers/gradeControllers.js";
+import { authToken } from "../middlewares/authToken.js";
 
 const gradeRoutes = express.Router();
 
-gradeRoutes.route("/").get(getGrade).post(setGrade);
-gradeRoutes.route("/:id").patch(updateGrade).delete(deleteGrade);
+gradeRoutes.route("/").get(authToken, getGrade).post(authToken, setGrade);
+gradeRoutes
+  .route("/:id")
+  .patch(authToken, updateGrade)
+  .delete(authToken, deleteGrade);
 
 export default gradeRoutes;

@@ -23,6 +23,10 @@ const UserSchema = mongoose.Schema(
       type: String,
       required: true,
     },
+    userLevel: {
+      type: Number,
+      required: true,
+    },
   },
   {
     timestamps: true,

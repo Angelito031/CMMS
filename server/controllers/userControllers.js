@@ -34,9 +34,16 @@ export const getUserById = async (req, res) => {
   }
 };
 export const setUser = async (req, res) => {
-  const { studNo, password, fullname, address, contact } = req.body;
+  const { studNo, password, fullname, address, contact, userLevel } = req.body;
   try {
-    if (!studNo || !password || !fullname || !address || !contact) {
+    if (
+      !studNo ||
+      !password ||
+      !fullname ||
+      !address ||
+      !contact ||
+      !userLevel
+    ) {
       return res.status(400).json({ message: "Please fill all the fields" });
     }
     const isStudNoUIsUnique = await userModel.findOne({ studNo });
@@ -56,6 +63,7 @@ export const setUser = async (req, res) => {
       fullname,
       address,
       contact,
+      userLevel,
     });
     if (!newUser) {
       return res
@@ -64,10 +72,14 @@ export const setUser = async (req, res) => {
     }
     await newUser.save();
     const token = jwt.sign(
-      { studNo, fullname, address, contact },
+      { id: newUser._id, studNo, fullname, address, contact, userLevel },
       process.env.SECRET
     );
-    return res.status(200).json({ message: "User created", newUser, token });
+    return res.status(200).json({
+      message: "User created",
+      user: { id: newUser._id, studNo, fullname, address, contact, userLevel },
+      token,
+    });
   } catch (error) {
     return res.status(500).json({ message: "An Error Has Occurred" });
   }
