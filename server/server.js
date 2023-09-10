@@ -7,6 +7,7 @@ import subjectRoutes from "./routes/subjectRoutes.js";
 import gradeRoutes from "./routes/gradeRoutes.js";
 import userRoutes from "./routes/userRoutes.js";
 import feedbackRoutes from "./routes/feedbackRoutes.js";
+import tokenRoutes from "./routes/tokenRoutes.js";
 
 //Dotenv config
 dotenv.config();
@@ -41,3 +42,4 @@ app.use("/api/subject", subjectRoutes);
 app.use("/api/grade", gradeRoutes);
 app.use("/api/user", userRoutes);
 app.use("/api/feedback", feedbackRoutes);
+app.use("/api/token", tokenRoutes);

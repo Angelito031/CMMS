@@ -2,23 +2,14 @@ import jwt from "jsonwebtoken";
 import userModel from "../models/userModel.js";
 
 export const authToken = async (req, res, next) => {
-  let token;
-  if (
-    req.headers.authorization &&
-    req.headers.authorization.startsWith("Bearer")
-  ) {
-    try {
-      token = req.headers.authorization.split(" ")[1];
+  const authHeader = req.headers["authorization"];
+  const token = authHeader && authHeader.split(" ")[1];
+  if (token == null) return res.status(400).json({ message: "Not Authorized" });
 
-      const decoded = jwt.verify(token, process.env.SECRET);
+  jwt.verify(token, process.env.SECRET, (error, user) => {
+    if (error) return res.status(400).json({ message: "Invalid TOKEN" });
+    req.user = user;
 
-      req.user = await userModel.findById(decoded.id).select("-password");
-
-      next();
-    } catch (error) {
-      return res.status(400).json({ message: "Not Authorized" });
-    }
-  } else {
-    res.status(401).json({ message: "Not Authorized, no token" });
-  }
+    next();
+  });
 };

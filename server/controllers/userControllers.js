@@ -3,6 +3,21 @@ import userModel from "../models/userModel.js";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 
+const generateAccessToken = (user) => {
+  return jwt.sign(
+    { id: user._id, userLevel: user.userLevel },
+    process.env.SECRET,
+    { expiresIn: "15m" }
+  );
+};
+
+const generateRefreshToken = (user) => {
+  return jwt.sign(
+    { id: user._id, userLevel: user.userLevel },
+    process.env.REFRESH_SECRET
+  );
+};
+
 export const getUser = async (req, res) => {
   try {
     const users = await userModel.find();
@@ -48,14 +63,13 @@ export const loginUser = async (req, res) => {
     if (!isMatch) {
       return res.status(400).json({ message: "Wrong password" });
     }
-    const token = jwt.sign(
-      { id: user._id, userLevel: user.userLevel },
-      process.env.SECRET
-    );
+    const accessToken = generateAccessToken(user);
+    const refreshToken = generateRefreshToken(user);
     return res.status(200).json({
       message: "User login",
       user: { id: user._id, userLevel: user.userLevel },
-      token,
+      accessToken,
+      refreshToken,
     });
   } catch (error) {
     return res
@@ -102,11 +116,14 @@ export const setUser = async (req, res) => {
         .json({ message: "An error has occurred while making your account" });
     }
     await newUser.save();
-    const token = jwt.sign({ id: newUser._id, userLevel }, process.env.SECRET);
+    const accessToken = generateAccessToken(newUser);
+    const refreshToken = generateRefreshToken(newUser);
+
     return res.status(200).json({
       message: "User created",
       user: { id: newUser._id, userLevel },
-      token,
+      accessToken,
+      refreshToken,
     });
   } catch (error) {
     return res.status(500).json({ message: "An Error Has Occurred" });
